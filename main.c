@@ -9,8 +9,8 @@
 #define WINDOW_WIDTH (640)
 #define WINDOW_HEIGHT (480)
 // Geschwindigkeit in Pixel pro Sekunde
-#define SPEED (200)
-#define COLLECTVALUE (10)
+#define SPEED (300)
+#define COLLECTVALUE (20)
 
 int main(int argc, char* argv[]) {
 
@@ -104,7 +104,6 @@ fruits.h /= 5;
 // Koordinatenursprung ist oben links, positive y-Achse zeigt nach unten
 dest.x = (WINDOW_WIDTH - dest.w) / 2;
 dest.y = (WINDOW_HEIGHT - dest.h) / 2;
-fruits.x = 10;
 fruits.y = 10;
 
 int up = 0;
@@ -118,6 +117,7 @@ float y_vel = 0;
 
 int exitbutton = 0;
 
+// int xold = 0;
 srand(time(NULL));
 // gameloop
 while (exitbutton == 0)
@@ -196,8 +196,8 @@ dest.y += y_vel / 60;
 // fruit eating and new random fruit
 if (dest.x < fruits.x + COLLECTVALUE && dest.x > fruits.x -COLLECTVALUE
  && dest.y < fruits.y + COLLECTVALUE && dest.y > fruits.y - COLLECTVALUE){
-   fruits.x = rand() +1 % WINDOW_WIDTH ;
-   fruits.y = rand() +1 % WINDOW_HEIGHT;
+   fruits.x = (rand()  % (WINDOW_WIDTH - 2 * fruits.w)) + fruits.w;
+   fruits.y = (rand()  % (WINDOW_HEIGHT - 2 * fruits.h)) + fruits.h;
  }
 
 
