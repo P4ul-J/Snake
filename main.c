@@ -103,31 +103,18 @@ while (exitbutton == 0)
                 case SDL_SCANCODE_W:
                 case SDL_SCANCODE_UP:
                     up = 1;
-                    down = left = right = 0;
                     break;
-
                 case SDL_SCANCODE_A:
                 case SDL_SCANCODE_LEFT:
                     left = 1;
-                    up = down = right = 0;
                     break;
-
                 case SDL_SCANCODE_S:
                 case SDL_SCANCODE_DOWN:
                     down = 1;
-                    up = right = left = 0;
-
                     break;
                 case SDL_SCANCODE_D:
                 case SDL_SCANCODE_RIGHT:
                     right = 1;
-                    up = down = left = 0;
-                    break;
-                }
-                break;
-             case SDL_KEYUP:
-                /*switch (event.key.keysym.scancode)
-=======
                     break;
                 }
                 break;
@@ -150,10 +137,7 @@ while (exitbutton == 0)
                 case SDL_SCANCODE_RIGHT:
                     right = 0;
                     break;
-<<<<<<< HEAD
-                }  */
                 }
-
                 break;
             }
 }
