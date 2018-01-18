@@ -23,7 +23,7 @@ if (SDL_Init(SDL_INIT_VIDEO|SDL_INIT_TIMER) != 0) {
 printf("Initialiserung erfolgreich!\n");
 
 //Fenster erstellen
-SDL_Window *win = SDL_CreateWindow("Snake", 100, 100, WINDOW_WIDTH, WINDOW_HEIGHT, 0);
+SDL_Window *win = SDL_CreateWindow("Snake - Score: 0", 100, 100, WINDOW_WIDTH, WINDOW_HEIGHT, 0);
 
 if (win == NULL) {
   printf("Fenster konnte nicht erstellt werden: %s\n", SDL_GetError());
@@ -116,8 +116,11 @@ int right = 0;
 //Bewegungsrichtung
 float x_vel = 0;
 float y_vel = 0;
+int score = 0;
+char scorestr[20];
 
 int exitbutton = 0;
+
 
 // int xold = 0;
 srand(time(NULL));
@@ -200,6 +203,8 @@ if (dest.x < fruits.x + COLLECTVALUE && dest.x > fruits.x - COLLECTVALUE
  && dest.y < fruits.y + COLLECTVALUE && dest.y > fruits.y - COLLECTVALUE){
    fruits.x = (rand()  % (WINDOW_WIDTH - 2 * fruits.w)) + fruits.w;
    fruits.y = (rand()  % (WINDOW_HEIGHT - 2 * fruits.h)) + fruits.h;
+   score += 10;
+
  }
 
 
@@ -216,6 +221,11 @@ SDL_RenderClear(rend);
 SDL_RenderCopy(rend, texfruit, NULL, &fruits);
 SDL_RenderCopy(rend, tex, NULL, &dest);
 SDL_RenderPresent(rend);
+
+// int "score" in string "scorestr" speichern
+sprintf(scorestr, "Snake - Score: %d", score);
+// dynamisch Fenstertitel ändern
+SDL_SetWindowTitle(win, scorestr);
 
 // wait 1/60th of a second
 SDL_Delay(1000/60);
