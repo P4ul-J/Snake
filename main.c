@@ -121,7 +121,6 @@ while (exitbutton == 0)
                 case SDL_SCANCODE_D:
                 case SDL_SCANCODE_RIGHT:
                     right = 1;
-<<<<<<< HEAD
                     up = down = left = 0;
                     break;
                 }
@@ -153,9 +152,8 @@ while (exitbutton == 0)
                     break;
 <<<<<<< HEAD
                 }  */
-=======
                 }
->>>>>>> ff16a75bc3c8d057ed8441e28ff0f6cc68c95f76
+
                 break;
             }
 }
