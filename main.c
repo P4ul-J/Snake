@@ -104,7 +104,9 @@ fruits.h /= 5;
 // Koordinatenursprung ist oben links, positive y-Achse zeigt nach unten
 dest.x = (WINDOW_WIDTH - dest.w) / 2;
 dest.y = (WINDOW_HEIGHT - dest.h) / 2;
-fruits.y = 10;
+
+fruits.x = (rand()  % (WINDOW_WIDTH - 2 * fruits.w)) + fruits.w;
+fruits.y = (rand()  % (WINDOW_HEIGHT - 2 * fruits.h)) + fruits.h;
 
 int up = 0;
 int down = 0;
@@ -194,7 +196,7 @@ dest.y += y_vel / 60;
 
 
 // fruit eating and new random fruit
-if (dest.x < fruits.x + COLLECTVALUE && dest.x > fruits.x -COLLECTVALUE
+if (dest.x < fruits.x + COLLECTVALUE && dest.x > fruits.x - COLLECTVALUE
  && dest.y < fruits.y + COLLECTVALUE && dest.y > fruits.y - COLLECTVALUE){
    fruits.x = (rand()  % (WINDOW_WIDTH - 2 * fruits.w)) + fruits.w;
    fruits.y = (rand()  % (WINDOW_HEIGHT - 2 * fruits.h)) + fruits.h;
