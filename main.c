@@ -2,11 +2,15 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_timer.h>
 #include <SDL2/SDL_image.h>
+#include <time.h>
+#include <stdlib.h>
+
 
 #define WINDOW_WIDTH (640)
 #define WINDOW_HEIGHT (480)
 // Geschwindigkeit in Pixel pro Sekunde
-#define SPEED (300)
+#define SPEED (200)
+#define COLLECTVALUE (10)
 
 int main(int argc, char* argv[]) {
 
@@ -39,8 +43,9 @@ if (rend == NULL) {
 
 // Bild in den Speicher laden
 SDL_Surface* surface = IMG_Load("resources/snake.png");
+SDL_Surface* fruitsurface = IMG_Load("resources/fruit.png");
 
-if (surface == NULL) {
+if (surface  == NULL) {
   printf("Bild konnte nicht in den Speicher geladen werden: %s\n", SDL_GetError());
   SDL_DestroyRenderer(rend);
   SDL_DestroyWindow(win);
@@ -59,20 +64,48 @@ if (tex == NULL) {
   return 1;
 }
 
+surface = IMG_Load("resources/fruit.png");
+
+if (surface  == NULL) {
+  printf("2 Bild konnte nicht in den Speicher geladen werden: %s\n", SDL_GetError());
+  SDL_DestroyRenderer(rend);
+  SDL_DestroyWindow(win);
+  SDL_Quit();
+  return 1;
+}
+
+SDL_Texture* texfruit = SDL_CreateTextureFromSurface(rend, surface);
+SDL_FreeSurface(surface);
+
+if (texfruit == NULL) {
+  printf("2 Textur konnte nicht erstellt werden: %s\n", SDL_GetError());
+  SDL_DestroyRenderer(rend);
+  SDL_DestroyWindow(win);
+  SDL_Quit();
+  return 1;
+}
+
 // Struct für Größe und Position des Sprites
 SDL_Rect dest;
+SDL_Rect fruits;
 
 // Dimensionen der Textur wird in struct gespeichert
 SDL_QueryTexture(tex, NULL, NULL, &dest.w, &dest.h);
+SDL_QueryTexture(texfruit, NULL, NULL, &fruits.w, &fruits.h);
 
 // Textur Skalieren
 dest.w /= 4;
 dest.h /= 4;
 
+fruits.w /= 5;
+fruits.h /= 5;
+
 // Sprite in der Mitte platzieren
 // Koordinatenursprung ist oben links, positive y-Achse zeigt nach unten
 dest.x = (WINDOW_WIDTH - dest.w) / 2;
 dest.y = (WINDOW_HEIGHT - dest.h) / 2;
+fruits.x = 10;
+fruits.y = 10;
 
 int up = 0;
 int down = 0;
@@ -85,6 +118,7 @@ float y_vel = 0;
 
 int exitbutton = 0;
 
+srand(time(NULL));
 // gameloop
 while (exitbutton == 0)
     {
@@ -158,16 +192,26 @@ if (right && !left) x_vel = SPEED;
 dest.x += x_vel / 60;
 dest.y += y_vel / 60;
 
-// collision detection with bounds
-if (dest.x <= 0) dest.x = 0;
-if (dest.y <= 0) dest.y = 0;
-if (dest.x >= WINDOW_WIDTH - dest.w) dest.x = WINDOW_WIDTH - dest.w;
-if (dest.y >= WINDOW_HEIGHT - dest.h) dest.y = WINDOW_HEIGHT - dest.h;
+
+// fruit eating and new random fruit
+if (dest.x < fruits.x + COLLECTVALUE && dest.x > fruits.x -COLLECTVALUE
+ && dest.y < fruits.y + COLLECTVALUE && dest.y > fruits.y - COLLECTVALUE){
+   fruits.x = rand() +1 % WINDOW_WIDTH ;
+   fruits.y = rand() +1 % WINDOW_HEIGHT;
+ }
+
+
+// collision detection with bounds and "wrap around"
+if (dest.x < 0) dest.x = WINDOW_WIDTH - dest.w;
+if (dest.y < 0) dest.y = WINDOW_HEIGHT - dest.h;
+if (dest.x > WINDOW_WIDTH - dest.w) dest.x = 0;
+if (dest.y > WINDOW_HEIGHT - dest.h) dest.y = 0;
 
 // clear the window
 SDL_RenderClear(rend);
 
 // draw the image to the window
+SDL_RenderCopy(rend, texfruit, NULL, &fruits);
 SDL_RenderCopy(rend, tex, NULL, &dest);
 SDL_RenderPresent(rend);
 
@@ -183,4 +227,4 @@ SDL_DestroyWindow(win);
 SDL_Quit();
 
 return 0;
-}
+} // Ende Main()
