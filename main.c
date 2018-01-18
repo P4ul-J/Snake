@@ -103,27 +103,44 @@ while (exitbutton == 0)
                 case SDL_SCANCODE_W:
                 case SDL_SCANCODE_UP:
                     up = 1;
+<<<<<<< HEAD
                     down = left = right = 0;
+=======
+>>>>>>> ff16a75bc3c8d057ed8441e28ff0f6cc68c95f76
                     break;
                 case SDL_SCANCODE_A:
                 case SDL_SCANCODE_LEFT:
                     left = 1;
+<<<<<<< HEAD
                     up = down = right = 0;
+=======
+>>>>>>> ff16a75bc3c8d057ed8441e28ff0f6cc68c95f76
                     break;
                 case SDL_SCANCODE_S:
                 case SDL_SCANCODE_DOWN:
                     down = 1;
+<<<<<<< HEAD
                     up = right = left = 0;
+=======
+>>>>>>> ff16a75bc3c8d057ed8441e28ff0f6cc68c95f76
                     break;
                 case SDL_SCANCODE_D:
                 case SDL_SCANCODE_RIGHT:
                     right = 1;
+<<<<<<< HEAD
                     up = down = left = 0;
                     break;
                 }
                 break;
              case SDL_KEYUP:
                 /*switch (event.key.keysym.scancode)
+=======
+                    break;
+                }
+                break;
+            case SDL_KEYUP:
+                switch (event.key.keysym.scancode)
+>>>>>>> ff16a75bc3c8d057ed8441e28ff0f6cc68c95f76
                 {
                 case SDL_SCANCODE_W:
                 case SDL_SCANCODE_UP:
@@ -141,7 +158,11 @@ while (exitbutton == 0)
                 case SDL_SCANCODE_RIGHT:
                     right = 0;
                     break;
+<<<<<<< HEAD
                 }  */
+=======
+                }
+>>>>>>> ff16a75bc3c8d057ed8441e28ff0f6cc68c95f76
                 break;
             }
 }
