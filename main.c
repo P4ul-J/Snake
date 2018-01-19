@@ -10,11 +10,21 @@
 // speed in pixel per second
 #define SPEED (300)
 #define COLLECTVALUE (32)
+#define LEFT  1
+#define UP    2
+#define DOWN  3
+#define RIGHT 4
+#define QUIT  1337
+#define PAUSE 155
+
+int dir;
+int dir_old;
+int input (void);
 
 int main(int argc, char* argv[]) {
 
   /* BEGINNING OF SDL INIT */
-  // initialize SDLs video and timer subsystem
+  // initialize SDLs video and timer sdubsystem
   if (SDL_Init(SDL_INIT_VIDEO|SDL_INIT_TIMER) != 0) {
     printf("Fehler beim Initialisieren von SDL: %s\n", SDL_GetError());
     return 1;
@@ -99,10 +109,7 @@ int main(int argc, char* argv[]) {
   fruit.x = (rand()  % (WINDOW_WIDTH - 2 * fruit.w)) + fruit.w;
   fruit.y = (rand()  % (WINDOW_HEIGHT - 2 * fruit.h)) + fruit.h;
 
-  int up = 0;
-  int down = 0;
-  int left = 0;
-  int right = 0;
+
 
   //Bewegungsrichtung
   float x_vel = 0;
@@ -110,60 +117,39 @@ int main(int argc, char* argv[]) {
 
   int score = 0;
   char scorestr[20];
-  int exitbutton = 0;
-  int pause = 0;
+
+  dir_old = 0;
+  x_vel = y_vel = 0;
+
+
 
   srand(time(NULL));
   /* END OF GAME INIT */
 
   /* BEGINNING OF GAME LOOP */
-  while (exitbutton == 0) {
+  while (input() != QUIT) {
+
     // process events
-    SDL_Event event;
-    while (SDL_PollEvent(&event)) {
-      switch (event.type) {
-        case SDL_QUIT:
-          exitbutton = 1;
-          break;
-        case SDL_KEYDOWN:
-          switch (event.key.keysym.scancode) {
-            case SDL_SCANCODE_W:
-            case SDL_SCANCODE_UP:
-              up = 1;
-              down = left = right = 0;
-              break;
-            case SDL_SCANCODE_A:
-            case SDL_SCANCODE_LEFT:
-              left = 1;
-              right = up = down = 0;
-              break;
-            case SDL_SCANCODE_S:
-            case SDL_SCANCODE_DOWN:
-              down = 1;
-              up = left = right = 0;
-              break;
-            case SDL_SCANCODE_D:
-            case SDL_SCANCODE_RIGHT:
-              right = 1;
-              left = up = down = 0;
-              break;
-            case SDL_SCANCODE_SPACE:
-            pause = !pause;
+    dir = input();
+    // determine velocity
 
-          }
-          break;
-
+        if (dir == UP) {
+          y_vel = -SPEED;
+          x_vel = 0;
         }
-      }
+        if (dir == DOWN) {
+          y_vel = SPEED;
+          x_vel = 0;
+        }
+        if (dir == LEFT) {
+          x_vel = -SPEED;
+          y_vel = 0;
+        }
+        if (dir == RIGHT) {
+          x_vel = SPEED;
+          y_vel = 0;
+        }
 
-      // determine velocity
-      x_vel = y_vel = 0;
-      if (!pause) {
-        if (up && !down) y_vel = -SPEED;
-        if (down && !up) y_vel = SPEED;
-        if (left && !right) x_vel = -SPEED;
-        if (right && !left) x_vel = SPEED;
-      }
 
       // update positions
       head.x += x_vel / 60;
@@ -218,3 +204,39 @@ int main(int argc, char* argv[]) {
     return 0;
 
 } // end of main()
+
+
+int input (void) {
+  int input;
+  SDL_Event event;
+  while (SDL_PollEvent(&event)) {
+    switch (event.type) {
+      case SDL_QUIT:
+        input = QUIT;
+        break;
+      case SDL_KEYDOWN:
+        switch (event.key.keysym.scancode) {
+          case SDL_SCANCODE_W:
+          case SDL_SCANCODE_UP:
+            input = UP;
+            break;
+          case SDL_SCANCODE_A:
+          case SDL_SCANCODE_LEFT:
+            input = LEFT;
+            break;
+          case SDL_SCANCODE_S:
+          case SDL_SCANCODE_DOWN:
+            input = DOWN;
+            break;
+          case SDL_SCANCODE_D:
+          case SDL_SCANCODE_RIGHT:
+            input = RIGHT;
+            break;
+          case SDL_SCANCODE_SPACE:
+          input = PAUSE;
+        }
+        break;
+      }
+    }
+  return input;
+}
