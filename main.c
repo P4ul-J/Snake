@@ -57,6 +57,14 @@ int main(int argc, char* argv[]) {
     SDL_Quit();
     return 1;
   }
+  SDL_Surface* surf_backgr = IMG_Load("resources/background.jpg");
+  if (surf_backgr  == NULL) {
+    printf("Bild konnte nicht in den Speicher geladen werden: %s\n", SDL_GetError());
+    SDL_DestroyRenderer(rend);
+    SDL_DestroyWindow(win);
+    SDL_Quit();
+    return 1;
+  }
 
   // create texture from surface which the renderer can draw to the window
   SDL_Texture* tex_sheet = SDL_CreateTextureFromSurface(rend, surf_sheet);
@@ -67,8 +75,17 @@ int main(int argc, char* argv[]) {
     SDL_Quit();
     return 1;
   }
+  SDL_Texture* tex_backgr = SDL_CreateTextureFromSurface(rend, surf_backgr);
+  if (tex_backgr == NULL) {
+    printf("Textur konnte nicht erstellt werden: %s\n", SDL_GetError());
+    SDL_DestroyRenderer(rend);
+    SDL_DestroyWindow(win);
+    SDL_Quit();
+    return 1;
+  }
   // we can free the surface afterwards
   SDL_FreeSurface(surf_sheet);
+  SDL_FreeSurface(surf_backgr);
 
 
   // structs for coordinates and dimensions of certain elements
@@ -280,6 +297,7 @@ int main(int argc, char* argv[]) {
         // am ende des game loops nicht mehr beachtet, wodurch alles viel zu schnell abläuft
         SDL_Delay(1000/10);
         SDL_RenderClear(rend);
+      SDL_RenderCopy(rend, tex_backgr, NULL, NULL);
       SDL_RenderCopy(rend, tex_sheet, &sprites[1], &fruit);
       for (int j = 0; j < snake_lenght; j++)   {
       SDL_RenderCopy(rend, tex_sheet, &sprites[0], &snake[j]);
