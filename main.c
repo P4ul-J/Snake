@@ -72,14 +72,25 @@ int main(int argc, char* argv[]) {
 
 
   // structs for coordinates and dimensions of certain elements
-  SDL_Rect head;
+
   SDL_Rect fruit;
+  SDL_Rect snake[50]; //Maximale Länge von 50 Teilen
+  snake[0].w = 64 / 2; //Kopf
+  snake[0].h = 64 / 2;
+  snake[1].w = 64 / 2;
+  snake[1].h = 64 / 2;
+  snake[2].w = 64 / 2;
+  snake[2].h = 64 / 2;
+  snake[3].w = 64 / 2;
+  snake[3].h = 64 / 2; //ende
+
+
+
 
   // set and scale  dimensions of these elements
   fruit.w = 64 / 2;
   fruit.h = 64 / 2;
-  head.w = 64 / 2;
-  head.h = 64 / 2;
+
 
 
   // declare and initialize array of structs for storing clipping dimensions
@@ -103,8 +114,22 @@ int main(int argc, char* argv[]) {
 
   /* BEGINNING OF GAME INIT */
   // Koordinatenursprung ist oben links, positive y-Achse zeigt nach unten
-  head.x = (WINDOW_WIDTH - head.w) / 2;
-  head.y = (WINDOW_HEIGHT - head.h) / 2;
+  snake[0].x = (WINDOW_WIDTH - snake[0].w) / 2;
+  snake[0].y = (WINDOW_HEIGHT - snake[0].h) / 2;
+
+  snake[1].x = snake[0].x + 32;
+  snake[1].y = snake[0].y;
+  snake[2].x = snake[1].x + 32;
+  snake[2].y = snake[1].y;
+  snake[3].x = snake[2].x + 32;
+  snake[3].y = snake[2].y;
+
+  int snake_lenght = 4;
+
+
+
+
+
 
   fruit.x = (rand()  % (WINDOW_WIDTH - 2 * fruit.w)) + fruit.w;
   fruit.y = (rand()  % (WINDOW_HEIGHT - 2 * fruit.h)) + fruit.h;
@@ -112,14 +137,14 @@ int main(int argc, char* argv[]) {
 
 
   //Bewegungsrichtung
-  float x_vel = 0;
+  float x_vel = -SPEED;
   float y_vel = 0;
 
   int score = 0;
   char scorestr[20];
 
   dir_old = 0;
-  x_vel = y_vel = 0;
+
 
 
 
@@ -129,9 +154,14 @@ int main(int argc, char* argv[]) {
   /* BEGINNING OF GAME LOOP */
   while (input() != QUIT) {
 
+
+
+
     // process events
-    dir = input();
+
     // determine velocity
+    dir = input();
+    if ( (dir != 0) && (dir + dir_old != 5))  {
 
         if (dir == UP) {
           y_vel = -SPEED;
@@ -149,36 +179,111 @@ int main(int argc, char* argv[]) {
           x_vel = SPEED;
           y_vel = 0;
         }
+        dir_old = dir;
+      }
+
+
+
 
 
       // update positions
-      head.x += x_vel / 60;
-      head.y += y_vel / 60;
+      snake[0].x += x_vel / 60;
+      snake[0].y += y_vel / 60;
 
       // detecting of snake eating fruit and random spawning of new fruit
-      if (head.x < fruit.x + COLLECTVALUE && head.x > fruit.x - COLLECTVALUE
-          && head.y < fruit.y + COLLECTVALUE && head.y > fruit.y - COLLECTVALUE) {
+      if (snake[0].x < fruit.x + COLLECTVALUE && snake[0].x > fruit.x - COLLECTVALUE
+          && snake[0].y < fruit.y + COLLECTVALUE && snake[0].y > fruit.y - COLLECTVALUE) {
 
             fruit.x = (rand()  % (WINDOW_WIDTH - 2 * fruit.w)) + fruit.w;
             fruit.y = (rand()  % (WINDOW_HEIGHT - 2 * fruit.h)) + fruit.h;
             score += 10;
+            snake_lenght++;
+            // Schlange verlängern, indem ein Element ans Ende des Arrays gehängt wird
+            int i = snake_lenght;
+            if (x_vel < 0) {
+              snake[i].x = snake[i-1].x-32;
+              snake[i].y = snake[i-1].y;
+            }
+            if (x_vel > 0) {
+              snake[i].x = snake[i-1].x+32;
+              snake[i].y = snake[i-1].y;
+            }
+            if (y_vel < 0) {
+              snake[i].x = snake[i-1].x;
+              snake[i].y = snake[i-1].y - 32;
+            }
+            if (y_vel > 0) {
+              snake[i].x = snake[i-1].x;
+              snake[i].y = snake[i-1].y + 32;
+            }
+
       }
 
 
       // collision detection with bounds and "wrap around"
-      if (head.x < 0) head.x = WINDOW_WIDTH - head.w;
-      if (head.y < 0) head.y = WINDOW_HEIGHT - head.h;
-      if (head.x > WINDOW_WIDTH - head.w) head.x = 0;
-      if (head.y > WINDOW_HEIGHT - head.h) head.y = 0;
+      if (snake[0].x < 0) snake[0].x = WINDOW_WIDTH - snake[0].w;
+      if (snake[0].y < 0) snake[0].y = WINDOW_HEIGHT - snake[0].h;
+      if (snake[0].x > WINDOW_WIDTH - snake[0].w) snake[0].x = 0;
+      if (snake[0].y > WINDOW_HEIGHT - snake[0].h) snake[0].y = 0;
+
+      for (int k = 1; k < snake_lenght; k++) {
+        if (snake[0].x < snake[k].x + COLLECTVALUE && snake[0].x > snake[k].x - COLLECTVALUE
+            && snake[0].y < snake[k].y + COLLECTVALUE && snake[0].y > snake[k].y - COLLECTVALUE) {
+              printf("GAMEOVER");
+              break;
+            }
+          }
+
+
 
       // clear the window / renderer
       SDL_RenderClear(rend);
 
 
       // draw fruit
-      SDL_RenderCopy(rend, tex_sheet, &sprites[1], &fruit);
+
       //draw head of snake
-      SDL_RenderCopy(rend, tex_sheet, &sprites[0], &head);
+          // Array, welches alle Gliedmaßen der Schlange beschreibt, wird
+          //um eine Einheit nach rechts verschoben, damit an vorderster Stelle ein
+          //neues Element eingefügt wird
+          //Gleichzeitig wird so das letzte Element der Schlange mit dem vorletzten
+          //überschrieben, wodurch es zu einer bewegung kommt.
+          // praktischer wäre hier wohl eine linked list anstelle des arrays
+          for (int k = snake_lenght-1; k > 0; k--) {
+          snake[k].x = snake[k-1].x;
+          snake[k].y = snake[k-1].y;
+          snake[k].w = snake[k-1].w;
+          snake[k].h = snake[k-1].h;
+        }
+
+        if (x_vel < 0) {
+          snake[0].x = snake[1].x-32;
+          snake[0].y = snake[1].y;
+        }
+        if (x_vel > 0) {
+          snake[0].x = snake[1].x+32;
+          snake[0].y = snake[1].y;
+        }
+        if (y_vel < 0) {
+          snake[0].x = snake[1].x;
+          snake[0].y = snake[1].y - 32;
+        }
+        if (y_vel > 0) {
+          snake[0].x = snake[1].x;
+          snake[0].y = snake[1].y + 32;
+        }
+        snake[0].w = 32;
+        snake[0].h = 32;
+
+        // BUG: Seit der implementierung der Schlangenkette, wird der timer
+        // am ende des game loops nicht mehr beachtet, wodurch alles viel zu schnell abläuft
+        SDL_Delay(1000/10);
+      SDL_RenderCopy(rend, tex_sheet, &sprites[1], &fruit);
+      for (int j = 0; j < snake_lenght; j++)   {
+      SDL_RenderCopy(rend, tex_sheet, &sprites[0], &snake[j]);
+
+    }
+
 
       // swap current visible rendered window with buffered
       // (double buffering)
