@@ -74,15 +74,15 @@ int main(int argc, char* argv[]) {
   // structs for coordinates and dimensions of certain elements
 
   SDL_Rect fruit;
-  SDL_Rect snake[50]; //Maximale Länge von 50 Teilen
-  snake[0].w = 64 / 2; //Kopf
+  SDL_Rect snake[50]; //Maximale Länge von 50 Teilen -> Später durch dynamisches array oder linked list ersetzen!
+  /*snake[0].w = 64 / 2; //Kopf
   snake[0].h = 64 / 2;
   snake[1].w = 64 / 2;
   snake[1].h = 64 / 2;
   snake[2].w = 64 / 2;
   snake[2].h = 64 / 2;
   snake[3].w = 64 / 2;
-  snake[3].h = 64 / 2; //ende
+  snake[3].h = 64 / 2; //ende */
 
 
 
@@ -152,7 +152,7 @@ int main(int argc, char* argv[]) {
   /* END OF GAME INIT */
 
   /* BEGINNING OF GAME LOOP */
-  while (input() != QUIT) {
+  while (dir != QUIT) {
 
 
 
@@ -226,18 +226,19 @@ int main(int argc, char* argv[]) {
       if (snake[0].x > WINDOW_WIDTH - snake[0].w) snake[0].x = 0;
       if (snake[0].y > WINDOW_HEIGHT - snake[0].h) snake[0].y = 0;
 
+      // collision detecting of snake eating itself
       for (int k = 1; k < snake_lenght; k++) {
         if (snake[0].x < snake[k].x + COLLECTVALUE && snake[0].x > snake[k].x - COLLECTVALUE
             && snake[0].y < snake[k].y + COLLECTVALUE && snake[0].y > snake[k].y - COLLECTVALUE) {
               printf("GAMEOVER");
-              break;
+              dir = QUIT;
             }
           }
 
 
 
       // clear the window / renderer
-      SDL_RenderClear(rend);
+
 
 
       // draw fruit
@@ -278,6 +279,7 @@ int main(int argc, char* argv[]) {
         // BUG: Seit der implementierung der Schlangenkette, wird der timer
         // am ende des game loops nicht mehr beachtet, wodurch alles viel zu schnell abläuft
         SDL_Delay(1000/10);
+        SDL_RenderClear(rend);
       SDL_RenderCopy(rend, tex_sheet, &sprites[1], &fruit);
       for (int j = 0; j < snake_lenght; j++)   {
       SDL_RenderCopy(rend, tex_sheet, &sprites[0], &snake[j]);
