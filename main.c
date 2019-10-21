@@ -10,11 +10,17 @@
 // speed in pixel per second
 #define SPEED (300)
 #define COLLECTVALUE (32)
+// Button Left
 #define LEFT  1
-#define UP    2
+// Button up
+#define UP   2
+// Button down
 #define DOWN  3
+// Button right
 #define RIGHT 4
+// Button / Sequence to quit
 #define QUIT  1337
+// Button / Sequence to pause
 #define PAUSE 155
 
 int dir;
