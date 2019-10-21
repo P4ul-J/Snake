@@ -24,6 +24,7 @@ int input (void);
 int main(int argc, char* argv[]) {
 
   /* BEGINNING OF SDL INIT */
+  //
   // initialize SDLs video and timer sdubsystem
   if (SDL_Init(SDL_INIT_VIDEO|SDL_INIT_TIMER) != 0) {
     printf("Fehler beim Initialisieren von SDL: %s\n", SDL_GetError());
@@ -75,6 +76,8 @@ int main(int argc, char* argv[]) {
     SDL_Quit();
     return 1;
   }
+
+  // create texture from surface which the renderer can draw to the backgroud
   SDL_Texture* tex_backgr = SDL_CreateTextureFromSurface(rend, surf_backgr);
   if (tex_backgr == NULL) {
     printf("Textur konnte nicht erstellt werden: %s\n", SDL_GetError());
@@ -83,6 +86,7 @@ int main(int argc, char* argv[]) {
     SDL_Quit();
     return 1;
   }
+
   // we can free the surface afterwards
   SDL_FreeSurface(surf_sheet);
   SDL_FreeSurface(surf_backgr);
@@ -91,15 +95,19 @@ int main(int argc, char* argv[]) {
   // structs for coordinates and dimensions of certain elements
 
   SDL_Rect fruit;
-  SDL_Rect snake[50]; //Maximale Länge von 50 Teilen -> Später durch dynamisches array oder linked list ersetzen!
-  /*snake[0].w = 64 / 2; //Kopf
-  snake[0].h = 64 / 2;
-  snake[1].w = 64 / 2;
-  snake[1].h = 64 / 2;
-  snake[2].w = 64 / 2;
-  snake[2].h = 64 / 2;
-  snake[3].w = 64 / 2;
-  snake[3].h = 64 / 2; //ende */
+
+  //Maximale Länge von 50 Teilen -> Später durch dynamisches array oder linked list ersetzen!
+  SDL_Rect snake[50];
+  /*
+   *  snake[0].w = 64 / 2; // -> Head
+   *  snake[0].h = 64 / 2;
+   *  snake[1].w = 64 / 2;
+   *  snake[1].h = 64 / 2;
+   *  snake[2].w = 64 / 2;
+   *  snake[2].h = 64 / 2;
+   *  snake[3].w = 64 / 2;
+   *  snake[3].h = 64 / 2; // -> Tail
+      */
 
 
 
@@ -130,6 +138,7 @@ int main(int argc, char* argv[]) {
   /* END OF SDL INIT  */
 
   /* BEGINNING OF GAME INIT */
+  //
   // Koordinatenursprung ist oben links, positive y-Achse zeigt nach unten
   snake[0].x = (WINDOW_WIDTH - snake[0].w) / 2;
   snake[0].y = (WINDOW_HEIGHT - snake[0].h) / 2;
@@ -147,7 +156,7 @@ int main(int argc, char* argv[]) {
 
 
 
-
+  // Spawn fruit at random location
   fruit.x = (rand()  % (WINDOW_WIDTH - 2 * fruit.w)) + fruit.w;
   fruit.y = (rand()  % (WINDOW_HEIGHT - 2 * fruit.h)) + fruit.h;
 
@@ -164,16 +173,12 @@ int main(int argc, char* argv[]) {
 
 
 
-
+  // set randomizer seed
   srand(time(NULL));
   /* END OF GAME INIT */
 
   /* BEGINNING OF GAME LOOP */
   while (dir != QUIT) {
-
-
-
-
     // process events
 
     // determine velocity
@@ -198,10 +203,6 @@ int main(int argc, char* argv[]) {
         }
         dir_old = dir;
       }
-
-
-
-
 
       // update positions
       snake[0].x += x_vel / 60;
@@ -236,7 +237,6 @@ int main(int argc, char* argv[]) {
 
       }
 
-
       // collision detection with bounds and "wrap around"
       if (snake[0].x < 0) snake[0].x = WINDOW_WIDTH - snake[0].w;
       if (snake[0].y < 0) snake[0].y = WINDOW_HEIGHT - snake[0].h;
@@ -252,11 +252,7 @@ int main(int argc, char* argv[]) {
             }
           }
 
-
-
       // clear the window / renderer
-
-
 
       // draw fruit
 
@@ -304,7 +300,6 @@ int main(int argc, char* argv[]) {
 
     }
 
-
       // swap current visible rendered window with buffered
       // (double buffering)
       SDL_RenderPresent(rend);
@@ -317,8 +312,6 @@ int main(int argc, char* argv[]) {
       // wait 1/60th of a second
       SDL_Delay(1000/60);
     } /* END OF GAME LOOP */
-
-
 
     // cleanup ressources
     SDL_DestroyTexture(tex_sheet);
