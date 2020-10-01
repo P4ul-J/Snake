@@ -1,4 +1,5 @@
 # Snake
+Dieses Repo enstand als finales Projekt fuer das Modul Prozedurale Programmierung an der TUHH.
 
 zum Kompilieren:
 in der cmd: mingw32-make
