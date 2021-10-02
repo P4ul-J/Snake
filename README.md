@@ -1,4 +1,5 @@
 # Snake
+** English Version below **
 Dieses Repo enstand als finales Projekt fuer das Modul Prozedurale Programmierung an der TUHH.
 
 Es wird eine Installation von GCC vorrausgesetzt.
@@ -13,7 +14,10 @@ erforderliche externe SDL-Libaries:
 https://www.libsdl.org/projects/SDL_image/
 
 ---
+# Snake
+This repository was created as the final project for the module **procedural programming** at TUHH.
 
+A GCC installation is required.
 ### Compile
 ```
 cd [PATH_TO_LOCAL_REPOSITORY]
