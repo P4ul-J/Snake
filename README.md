@@ -3,7 +3,7 @@ Dieses Repo enstand als finales Projekt fuer das Modul Prozedurale Programmierun
 
 Es wird eine Installation von GCC vorrausgesetzt.
 
-Kompilieren:
+### Kompilieren
 in der cmd: mingw32-make
 
 SDL2.dll muss sich zudem im Ordner befinden
